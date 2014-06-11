@@ -5,11 +5,10 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.util.ArrayList;
 
-public class RoundTwo extends Round{
+public class NumberPlayersScreen extends Round{
 
-	// Function to setup the applet screen for this round
 	public void setScreen(Graphics g, ArrayList<Image> images, ArrayList<Button> buttons){
-		
-	}
+		System.out.println("How many players are there?");
 
+	}
 }
