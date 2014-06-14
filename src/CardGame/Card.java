@@ -23,11 +23,8 @@ public class Card{
 
 	//Constructors
 	Card(){
-		name="";
-		face="";
-		suit="";
-		value=0;
-		colour="";
+		setFace("N"); //null card
+		setSuit("B"); // back of card
 	}
 	
 	Card(String face, String suit){
@@ -66,6 +63,7 @@ public class Card{
 	public void setColour(){
 		if(this.suit=="H"||this.suit=="D"||this.suit=="R"){ this.colour="Red"; }
 		else if(this.suit=="S"||this.suit=="C"||this.suit=="B"){ this.colour="Black"; }
+		else if(this.suit=="B"){ this.colour="Blue"; }
 		else{
 			System.out.println("Unknown suit: "+this.suit+"! Setting colour to null");
 			colour="";
@@ -80,6 +78,7 @@ public class Card{
 		else if(this.face=="K"){ this.value=13; }
 		else if(this.face=="A"){ this.value=1; }
 		else if(this.face=="JK"){ this.value=-1; } //value of joker is undefined
+		else if(this.face=="N"){ this.value=0; } //value of the null card
 		else{ this.value=Integer.parseInt(this.face); }
 	}
 	
@@ -104,7 +103,7 @@ public class Card{
 	public void setImageURL(){
 		// Try and get the image and catch an exception 
 		try{
-			this.imageURL = new URL(urlBase+name+".jpg");
+			this.imageURL = new URL(urlBase+name+".png");
 	    }	
 		catch(MalformedURLException e){
 	         e.printStackTrace();

@@ -1,13 +1,11 @@
 package CardGame;
 
-import java.awt.Button;
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
 import java.util.ArrayList;
 
 public class HomeScreen extends Round{
 		
-	public void setScreen(Graphics g, ArrayList<Image> images, ArrayList<Button> buttons){
+	public void setScreen(Graphics g, ArrayList<Image> images, ArrayList<Button> buttons, ArrayList<TextField> textFields){
 
 		System.out.println("Setting home screen");
 
