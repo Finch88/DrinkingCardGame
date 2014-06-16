@@ -5,6 +5,13 @@ import java.util.ArrayList;
 
 public class NumberPlayersScreen extends Round{
 
+	public void setMessage(String message){
+		super.message=message;
+	}
+	public String getMessage(){
+		return super.message;
+	}
+	
 	public void setScreen(Graphics g, ArrayList<Image> images, ArrayList<Button> buttons, ArrayList<TextField> textFields){
 		g.drawImage(images.get(0), 50, 50, 250, 200, null);
 
@@ -20,7 +27,8 @@ public class NumberPlayersScreen extends Round{
 		buttons.get(0).setForeground(fontColour);
 		buttons.get(0).setLabel("Go!");
 		buttons.get(0).setLocation(100,320);
-
-
 	}
+	// Must be implemented but do nothing for this round
+	public void playRound(Player player, String guess, Deck deck){}
+
 }

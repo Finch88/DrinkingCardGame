@@ -37,7 +37,7 @@ public class Card{
 	public String getFace(){ return this.face; }
 	public String getSuit(){ return this.suit; }
 	public int getValue(){ return this.value; }
-	public String getColor(){ return this.colour; }
+	public String getColour(){ return this.colour; }
 	public URL getImageURL(){ return this.imageURL; }
 	public Image getImage(){ return this.image; }
 	
@@ -61,8 +61,8 @@ public class Card{
 	}
 	
 	public void setColour(){
-		if(this.suit=="H"||this.suit=="D"||this.suit=="R"){ this.colour="Red"; }
-		else if(this.suit=="S"||this.suit=="C"||this.suit=="B"){ this.colour="Black"; }
+		if(this.suit=="H"||this.suit=="D"||this.suit=="R"){ this.colour="RED"; }
+		else if(this.suit=="S"||this.suit=="C"||this.suit=="B"){ this.colour="BLACK"; }
 		else if(this.suit=="B"){ this.colour="Blue"; }
 		else{
 			System.out.println("Unknown suit: "+this.suit+"! Setting colour to null");
@@ -80,6 +80,11 @@ public class Card{
 		else if(this.face=="JK"){ this.value=-1; } //value of joker is undefined
 		else if(this.face=="N"){ this.value=0; } //value of the null card
 		else{ this.value=Integer.parseInt(this.face); }
+	}
+	
+	// Manually set value of card- used for aces
+	public void setValue(int val){
+		this.value=val;
 	}
 	
 	public void setImage(){

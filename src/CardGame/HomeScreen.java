@@ -4,19 +4,20 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class HomeScreen extends Round{
-		
+
+	public void setMessage(String message){
+		super.message=message;
+	}
+	public String getMessage(){
+		return super.message;
+	}
+	
 	public void setScreen(Graphics g, ArrayList<Image> images, ArrayList<Button> buttons, ArrayList<TextField> textFields){
 
 		System.out.println("Setting home screen");
 
 		// Set general properties
-		for(int i=0; i<buttons.size(); i++){
-			buttons.get(i).setSize(150,50);
-			buttons.get(i).setFont(labelFont);
-			buttons.get(i).setBackground(buttonColour);
-			buttons.get(i).setForeground(fontColour);
-			
-		}
+		super.setButtonProperties(buttons);
 		
 		// Specific properties for each button
 		buttons.get(0).setLabel("Play");
@@ -27,5 +28,7 @@ public class HomeScreen extends Round{
 		
 		g.drawImage(images.get(0), 50, 50, 250, 200, null);
 	}
+	// Must be implemented but do nothing for this round
+	public void playRound(Player player, String guess, Deck deck){}
 	
 }

@@ -14,9 +14,11 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 
 	public static final long serialVersionUID=42L;
 	
-	String message = "Hello World";
 	int nPlayers;
 	int player;
+	int currentRound;
+	String guess; // Player's guess 
+	int numFingers; //number of fingers for part two
 	
 	Round round;
 	Deck deck;
@@ -50,10 +52,11 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 		context=this.getAppletContext();	
 
 		deck=new Deck(); //Initialises the deck
-
 		round = new HomeScreen();
 		
 		player=0; //initialises the player number;
+		currentRound=0;
+		numFingers=2;
 		
 		bkgColour = new Color(255,255,169);
 		setBackground(bkgColour);
@@ -73,6 +76,10 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 		helpButton.addActionListener(this);
 		goButton.addActionListener(this);
     	nextButton.addActionListener(this);
+		guessButton1.addActionListener(this);
+		guessButton2.addActionListener(this);
+		guessButton3.addActionListener(this);
+    	guessButton4.addActionListener(this);
 
     	// Initialising the TextField 
 		nameField = new TextField(30);
@@ -132,22 +139,58 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 			else if(round instanceof GetPlayerName){ addPlayer(); }
 		}
 		else if(evt.getSource()==nextButton){
-			addPlayer();	
+			if(round instanceof GetPlayerName){ addPlayer(); }
+			else{
+				player++;
+				// Once all players have played a round, reset the player index and play next round
+				if(player>=nPlayers){ 
+					player=0;
+					currentRound++;
+				}
+				playThisRound();
+			}
 		}
 		else if(evt.getSource()==guessButton1){
-
+			guess=guessButton1.getLabel();
+			round.playRound(players.get(player), guess, deck);
+			getCardImages();
+			for(Button button : buttons){
+				remove(button);
+			}
+			add(nextButton);
+			repaint();
 		}
 		else if(evt.getSource()==guessButton2){
-
+			guess=guessButton2.getLabel();
+			round.playRound(players.get(player), guess, deck);
+			getCardImages();
+			for(Button button : buttons){
+				remove(button);
+			}
+			add(nextButton);
+			repaint();		
 		}
 		else if(evt.getSource()==guessButton3){
-
+			guess=guessButton3.getLabel();
+			round.playRound(players.get(player), guess, deck);
+			getCardImages();
+			for(Button button : buttons){
+				remove(button);
+			}
+			add(nextButton);
+			repaint();
 		}
 		else if(evt.getSource()==guessButton4){
-
+			guess=guessButton4.getLabel();
+			round.playRound(players.get(player), guess, deck);
+			getCardImages();
+			for(Button button : buttons){
+				remove(button);
+			}
+			add(nextButton);
+			repaint();
 		}
 	}
-
     // Definitions for focus events
     public void focusLost(final FocusEvent pE) {}
     public void focusGained(final FocusEvent pE){
@@ -160,7 +203,7 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 		for(int i=0; i<deck.cards.size(); i++){
 			Card card=deck.cards.get(i);
 			System.out.println(card.getName());
-			message=card.getName();
+			//message=card.getName();
 		}
 		// Try and get the image and catch an exception 
 		Card test = new Card();
@@ -233,6 +276,7 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 				System.out.println(pl.getName());
 			}
 			player=0; //reset the players index for the next round
+			currentRound++;
 			playRoundOne();
 		}
 		else{
@@ -241,13 +285,52 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 		}
     }
     
+    public void getCardImages(){
+		images.clear();
+		for(int i=0; i<players.get(player).dealtCards.size(); i++){
+			try{
+				//System.out.println(players.get(player).dealtCards.get(i).getName());
+				CardImage=ImageIO.read(players.get(player).dealtCards.get(i).getImageURL());
+			}	
+			catch(IOException ioe){
+				ioe.printStackTrace();
+				System.out.println("Image IO exception");
+			}
+			images.add(CardImage);
+		}		
+    }
     
+    public void getPartTwoImage(){
+		if(round instanceof PartTwo){
+			images.clear();
+			try{
+				//System.out.println(players.get(player).dealtCards.get(i).getName());
+				CardImage=ImageIO.read(round.PartTwoCard.getImageURL());
+			}	
+			catch(IOException ioe){
+				ioe.printStackTrace();
+				System.out.println("Image IO exception");
+			}
+			images.add(CardImage);
+		}
+		else{
+			System.out.println("Trying to access getPartTwoImage when round!=PartTwo");
+		}
+    }
+    // Plays the current round
+    public void playThisRound(){
+    	if(currentRound==1){ playRoundOne(); }
+    	else if(currentRound==2){ playRoundTwo(); }
+    	else if(currentRound==3){ playRoundThree(); }
+    	else if(currentRound==4){ playRoundFour(); }
+    	else if(currentRound==5){ playPartTwo(); }
+    }
+        
     // Function to play the first round of the game
 	public void playRoundOne(){
 		// Clear arrays and remove old buttons and TextFields
 		buttons.clear();
 		textFields.clear();
-		images.clear();
 		
 		remove(nameField);
 		remove(nextButton);
@@ -258,16 +341,12 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 		buttons.add(guessButton1);
 		buttons.add(guessButton2);
 	
-		for(int i=0; i<players.get(player).dealtCards.size(); i++){
-			try{
-				CardImage=ImageIO.read(players.get(player).dealtCards.get(i).getImageURL());
-			}	
-			catch(IOException ioe){
-				ioe.printStackTrace();
-				System.out.println("Image IO exception");
-			}
-			images.add(CardImage);
-		}
+		// nextButton needs to be position for later
+		buttons.add(nextButton);
+		round.setMessage(players.get(player).getName()+": What colour?");
+		System.out.println(round.getMessage());
+		
+		getCardImages();
 		
 		round = new RoundOne();
 		repaint();
@@ -275,28 +354,108 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 	
 	// Function to play the second round of the game
 	public void playRoundTwo(){
+		// Clear arrays and remove old buttons and TextFields
+		buttons.clear();
+		textFields.clear();
+
+		remove(nextButton);
+		
+		// Add buttons to accept guess from players
+		add(guessButton1);
+		add(guessButton2);
+		buttons.add(guessButton1);
+		buttons.add(guessButton2);
+	
+		// nextButton needs to be position for later
+		buttons.add(nextButton);
+		round.setMessage(players.get(player).getName()+": Higher or Lower?");
+		System.out.println(round.getMessage());
+		
+		getCardImages();
+		
 		round = new RoundTwo();
+		repaint();
 	}
 	
 	// Function to play the third round of the game
 	public void playRoundThree(){
+		// Clear arrays and remove old buttons and TextFields
+		buttons.clear();
+		textFields.clear();
+
+		remove(nextButton);
+
+		// Add buttons to accept guess from players
+		add(guessButton1);
+		add(guessButton2);
+		buttons.add(guessButton1);
+		buttons.add(guessButton2);
+	
+		// nextButton needs to be position for later
+		buttons.add(nextButton);
+		round.setMessage(players.get(player).getName()+": Inside or Outside?");
+		System.out.println(round.getMessage());
+		
+		getCardImages();
+		
 		round = new RoundThree();
+		repaint();
 	}
 	
 	// Function to play the fourth round of the game
 	public void playRoundFour(){
+		// Clear arrays and remove old buttons and TextFields
+		buttons.clear();
+		textFields.clear();
+
+		remove(nextButton);
+
+		// Add buttons to accept guess from players
+		add(guessButton1);
+		add(guessButton2);
+		add(guessButton3);
+		add(guessButton4);		
+		buttons.add(guessButton1);
+		buttons.add(guessButton2);
+		buttons.add(guessButton3);
+		buttons.add(guessButton4);
+	
+		// nextButton needs to be position for later
+		buttons.add(nextButton);
+		round.setMessage(players.get(player).getName()+": Guess the suit");
+		System.out.println(round.getMessage());
+		
+		getCardImages();
+		
 		round = new RoundFour();
+		repaint();
 	}
 	
 	// Function to play the second part of the game
 	public void playPartTwo(){
+		// Clear arrays and remove old buttons and TextFields
+		buttons.clear();
+		textFields.clear();
+		
+		remove(nameField);
+		remove(nextButton);
+		
+		// Add buttons to accept guess from players
+		//add(nextButton);
+		buttons.add(nextButton);
+
+		round.setMessage("Give: "+numFingers+" fingers");
+		System.out.println(round.getMessage());
+		
 		round = new PartTwo();
+		getPartTwoImage();
+		repaint();
 	}
 			
 	public void paint(Graphics g){
 		// set the size of the application.
 		// comment out when running in a browser
-		this.setSize(new Dimension(350,500)); //350, 400
+		this.setSize(new Dimension(350,575)); //350, 400
 		//g.drawImage(CardImage, 50, 50, 250, 200, null);
 
 		// Setting up the screen for a given round

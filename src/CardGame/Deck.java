@@ -21,10 +21,17 @@ public class Deck {
 		cards.add(new Card("JK","R"));
 		cards.add(new Card("JK","B"));
 	}
+
+	public int getSize(){
+		return cards.size();
+	}
 	
+	public Card getCard(int index){
+		return cards.get(index);
+	}
 	// remove a card from the deck after it is dealt
-	public void removeCard(Card card){
-		
+	public void removeCard(int index){
+		cards.remove(index);
 	}
 
 }
