@@ -19,6 +19,9 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 	int currentRound;
 	String guess; // Player's guess 
 	int numFingers; //number of fingers for part two
+	int partTwoCount; //number of times part two has been played
+	String giveOrTake; 
+	String names;
 	
 	Round round;
 	Deck deck;
@@ -54,9 +57,12 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 		deck=new Deck(); //Initialises the deck
 		round = new HomeScreen();
 		
+		nPlayers=0;
 		player=0; //initialises the player number;
 		currentRound=0;
 		numFingers=2;
+		partTwoCount=0;
+		names="";
 		
 		bkgColour = new Color(255,255,169);
 		setBackground(bkgColour);
@@ -120,6 +126,18 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 	
 	public void destroy(){
 		System.out.println("Destroying applet");
+		buttons.clear();
+		textFields.clear();
+		images.clear();
+		players.clear();
+		remove(playButton);
+		remove(helpButton);
+		remove(goButton);
+		remove(nextButton);
+		remove(guessButton1);
+		remove(guessButton2);
+		remove(guessButton3);
+		remove(guessButton4);
 	}
 
 	// Definitions for actions, i.e. button clicks
@@ -140,6 +158,17 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 		}
 		else if(evt.getSource()==nextButton){
 			if(round instanceof GetPlayerName){ addPlayer(); }
+			else if(round instanceof PartTwo){
+				partTwoCount++;
+				if(partTwoCount==8){ destroy(); init(); repaint(); }
+				else if(partTwoCount%2==0){ 
+					numFingers++;
+					playThisRound();
+				}
+				else{
+					playThisRound();
+				}
+			}
 			else{
 				player++;
 				// Once all players have played a round, reset the player index and play next round
@@ -303,6 +332,7 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
     public void getPartTwoImage(){
 		if(round instanceof PartTwo){
 			images.clear();
+			//if(partTwoCount==0){ System.out.println("Setting blank card"); ((PartTwo) round).newCard(); }
 			try{
 				//System.out.println(players.get(player).dealtCards.get(i).getName());
 				CardImage=ImageIO.read(round.PartTwoCard.getImageURL());
@@ -441,14 +471,35 @@ public class PlayGame extends Applet implements ActionListener, FocusListener{
 		remove(nextButton);
 		
 		// Add buttons to accept guess from players
-		//add(nextButton);
+		add(nextButton);
 		buttons.add(nextButton);
 
-		round.setMessage("Give: "+numFingers+" fingers");
-		System.out.println(round.getMessage());
-		
+		if(partTwoCount%2==0){
+			giveOrTake="Give: ";
+		}
+		else{
+			giveOrTake="Take: ";
+		}
+				
 		round = new PartTwo();
+		round.playRound(players.get(0), "", deck);
+		
 		getPartTwoImage();
+		
+		names="";
+		for(Player pl: players){
+			for(Card card: pl.dealtCards){
+				if(card.getValue()==round.PartTwoCard.getValue()){
+					nameField.setText(pl.getName());
+					System.out.println(pl.getName());
+					textFields.add(nameField);
+				}
+			}
+		}
+		
+		round.setMessage(giveOrTake+numFingers+" fingers");
+		System.out.println(round.getMessage());
+
 		repaint();
 	}
 			
